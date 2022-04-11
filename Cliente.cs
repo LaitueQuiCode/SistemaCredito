@@ -1,6 +1,6 @@
 ﻿namespace SistemaCredito
 {
-    internal class Cliente
+    public class Cliente
     {
         private readonly int _rut;
         private string _primerNombre, _primerApellido, _segundoApellido;
@@ -47,16 +47,39 @@
         public double Sueldo { get => _sueldo; set => _sueldo = value; }
 
         // Customers
-        public bool ValidarRut(out int digito)
+        public bool ValidarRut(in int digito)
         {
-            string strRut = _rut.ToString();
+            int digitoCalculado = -1;
+            string? strRut = _rut.ToString();
+            int sumatoria = 0;
+            int factor = 0;
+            int n=0;
             for (int indice = strRut.Length-1 ; indice >= 0 ; indice--)
             {
+                int mantiza = -1;
+                int.TryParse(strRut[indice].ToString(), out mantiza);
 
+                n = (factor % 6 + 2);
+                //Console.WriteLine(n);
+                //Console.WriteLine("Mantiza: "+mantiza);  
+                sumatoria += mantiza * n;
+                //Console.WriteLine("sumatoria actual: " + sumatoria);
+                factor++;
             }
-
-            digito = -1;
-            return false;
+            //Console.WriteLine("sumatoria: "+sumatoria);
+            int modOnce = Math.Abs(sumatoria % 11 - 11); // SOLUCIÓN !!
+            //Console.WriteLine("Mod once: "+modOnce);
+            //digitoCalculado = 11-modOnce;
+            if (modOnce == 11)
+                digitoCalculado = 0;
+            else if (modOnce == 10)
+                digitoCalculado = 1;
+            else
+                digitoCalculado = modOnce;
+            //Console.WriteLine("Digito calculado: " + digitoCalculado);
+            bool respuesta = digito == digitoCalculado;
+            //Console.WriteLine("respuesta: "+respuesta);
+            return respuesta;
         }
     }
 }
